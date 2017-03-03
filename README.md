@@ -103,6 +103,6 @@ npm install
 
 Atte:
 Carlos Jesús Huchim Ahumada
-twitter.com/huchim
-facebook.com/huchim
+[twitter.com/huchim](twitter.com/huchim)
+[facebook.com/huchim](facebook.com/huchim)
 

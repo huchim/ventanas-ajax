@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <meta charset="utf-8">
+    <title>Ejemplos de uso de AjaxTools</title>    
+    <script src="node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+    <link href="node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="node_modules/jquery-mockjax/dist/jquery.mockjax.min.js"></script>
+    <script type="text/javascript">
+        $.mockjax({url: "/simple-panel/", responseText: 'Hola!' });
+        $.mockjax({url: "/enlace-form-1/", responseText: 'Ok' });
+        $.mockjax({url: "/enlace-form-1/", responseText: 'Ok' });
+        $.mockjax({url: "/form/", responseText: 'Ok' });
+        $.mockjax({url: "/enlace-form-html/", responseText: '<strong>Este es un texto de respueste en HTML</strong><br /><p>Dentro de otra ventana.</p><button class="btn btn-primary btn-close">Cerrar</button>' });
+        
+
+        $(function(){
+            $(".example").each(function() {
+                var el = $(this).attr("data-example");
+                var html = $("#" + el).html();
+                $(this).text(html);
+            });
+            var form1 = $("#testform1").clone(false);
+            $("form", form1).addClass("form-ajax");
+            $.mockjax({url: "/enlace-form-2/", responseText: form1.html() });
+
+            var form2 = $("#testform2").clone(false);
+            $("form", form2).addClass("form-ajax");
+            $.mockjax({url: "/enlace-form-3/", responseText: form2.html() });
+
+            var form3 = $("#testform3").clone(false);
+            $("form", form3).addClass("form-ajax");
+            $.mockjax({url: "/form-recursive/", responseText: form3.html() });
+        });
+    </script>
+    <script src="../dist/ventanas-ajax.js"></script>    
+</head>
+<body>
+    <div class="collapse" id="testform1">
+        <form action="/form/" method="POST">
+            <p>
+                Este es un formulario que se enviará y devolverá una respuesta "Ok"
+            </p>
+            <button type="submit" class="btn btn-primary">Enviar</button>
+            <button type="button" class="btn btn-default btn-close">Cerrar</button>
+        </form>        
+    </div>
+    <div class="collapse" id="testform2">
+        <form action="/enlace-form-html/" method="POST">
+            <p>
+                Este es un formulario que se enviará y devolverá una respuesta HTML
+            </p>
+            <button type="submit" class="btn btn-primary">Enviar</button>
+            <button type="button" class="btn btn-default btn-close">Cerrar</button>
+        </form>        
+    </div>
+
+    <div class="collapse" id="testform3">
+        <form action="/form-recursive/" method="POST">
+            <p>
+                Este formulario devolverá otro formulario repetidamente hasta que el usuario cierre.
+            </p>
+            <button type="submit" class="btn btn-primary">Enviar</button>
+            <button type="button" class="btn btn-default btn-close">Cerrar</button>
+        </form>        
+    </div>
+
+    <div class="container">
+        <div class="page-header">
+            <h1>Pruebas de uso de AjaxTools <small>Revisión x</small>
+        </div>
+        <h2>
+            Introducción
+        </h2>
+        <p>
+            Todos los controles enunciados a continuación son cargados en el momento de cargar el archivo <code>AjaxTools.js</code>.
+        </p>
+        <h3>Panel</h3>
+        <p>
+            Un panel puede cargar el contenido de una página definida en <code>data-url</code>.
+        </p>
+        <div class="panel panel-default">
+            <div class="panel-body" id="simple-panel">
+                <div class="panel-ajax" data-url="/simple-panel/"></div>
+            </div>
+            <div class="panel-footer">
+                <code class="example" data-example="simple-panel"></code>
+            </div>
+        </div>
+
+        <h3>Enlaces</h3>
+        <p>
+            Todos los enlaces abren una ventana de diálogo, la cual puede cerrarse automáticamente dependiendo del tipo de respuesta.
+        </p>
+        <p>El siguiente enlace ejecutará una página, la cual devuelve "Ok", lo cuál hacer que la ventana se cierre.</p>
+        <div class="panel panel-default">
+            <div class="panel-body" id="enlace-form-1">
+                <a href="/enlace-form-1/" class="link-ajax">Ejecutar enlace</a>
+            </div>
+            <div class="panel-footer">
+                <code class="example" data-example="enlace-form-1"></code>
+            </div>
+        </div>
+
+        <h4>
+            Ejecutar una función cuando la ventana se cierre.
+        </h4>
+        <p>
+            Al dar clic en un enlace, lo cual abre una ventana que al finalizar puede ejecutar una función. Cuando la ventana
+            no se cierra automáticamente, osea que el usuario la cierra con el botón "Cerrar" (.btn-close) es cuando se ejecuta
+            la función.
+        </p>
+        <div class="panel panel-default">
+            <div class="panel-body" id="enlace-form-2">
+                <script type="text/javascript">
+                    function EsperarQueCierreEnlace2(ajaxComponent, data)
+                    {
+                        var status = data.Status;
+                        var type = data.Type;
+                        var response = data.Response || "Sin respuesta";
+                        
+                        var r = "Data: { Status: " + status + "";
+                        r += ", Type: " + type;
+                        r += ", Response: { ";
+                        if (response)
+                        {
+                            for (var k in response)
+                            {
+                                r += k + ": " + response[k] + ", ";
+                            }
+                        }
+
+                        r += " }";
+                        r += ", ajaxComponent: { Id: " + ajaxComponent.attr("id") + " }"
+                        
+                        ajaxComponent.text("Ejecutar de nuevo...");
+                        $("#enlace-form-2-console").text(r);
+                    }
+                </script>
+                <a href="/enlace-form-1/" class="link-ajax" data-callback="EsperarQueCierreEnlace2">Ejecutar enlace</a>
+                | 
+                <a href="/enlace-form-json/" class="link-ajax" data-callback="EsperarQueCierreEnlace2">Ejecutar enlace con respuesta JSON</a>
+                |
+                <a href="/enlace-form-html/" class="link-ajax" data-callback="EsperarQueCierreEnlace2">Abrir página HTML</a>
+                |
+                <a href="/enlace-form-2/" class="link-ajax" data-callback="EsperarQueCierreEnlace2">Abrir un ventana con formulario</a>
+                |
+                <a href="/enlace-form-3/" class="link-ajax" data-callback="EsperarQueCierreEnlace2">Abrir un ventana con formulario que devuelva HTML</a>
+                |
+                <a href="/form-recursive/" class="link-ajax" data-callback="EsperarQueCierreEnlace2">Formulario recursivo</a>
+                <pre id="enlace-form-2-console">Resultado: Dar clic en el enlace.</pre>
+            </div>
+            <div class="panel-footer">
+                <pre class="example" data-example="enlace-form-2"></pre>
+            </div>
+        </div>
+        <table class="table">
+            <tbody>
+                <tr>
+                    <td>ajaxComponent</td>
+                    <td>JQuery</td>
+                    <td>Es el enlace o elemento que inició el proceso. Si no tenía Id, se le generará uno.</td>
+                </tr>
+                <tr>
+                    <td>data</td>
+                    <td>Jaguar.AjaxResponse</td>
+                    <td>Son los datos de la operación que incluyen los datos de la respuesta.
+                        <ul>
+                            <li>Status:<span class="text-muted">string</span></li>
+                            <li>Response:<span class="text-muted">{ [Key: string]: any }</span>
+                            <span class="small"> Cuando el tipo sea JSON se puede obtener elresultado en este objeto.</span></li>
+                            <li>Type:<span class="text-muted">ResponseType</span>
+                                <ul>
+                                    <li>Automatic (0)</li>
+                                    <li>JSON (1)</li>
+                                    <li>HTML (2)</li>
+                                    <li>Other (3)</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+
+
+    </div>
+
+
+</body>
+</html>

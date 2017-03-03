@@ -456,4 +456,4 @@ var Jaguar;
         Web.Load = Load;
     })(Web = Jaguar.Web || (Jaguar.Web = {}));
 })(Jaguar || (Jaguar = {}));
-//# sourceMappingURL=AjaxTools.js.map
+//# sourceMappingURL=ventanas-ajax.js.map

@@ -201,13 +201,14 @@ var Jaguar;
                 if ($(".btn-close", ajaxComponent).length) {
                     var closeButton = $(".btn-close", ajaxComponent).last();
                     var closeResponse = new Jaguar.AjaxResponse();
-                    closeResponse.Status = "Closed";
+                    closeResponse.Status = closeButton.attr("data-close-status") || "Closed";
                     closeResponse.Type = Jaguar.ResponseType.Other;
+                    closeResponse.Response = data.Response;
                     console.log(linkObject.attr("id"), "La ventana contiene un botón para cerrar, cuando el usuario de clic se cerrará.");
                     closeButton.click(function (event) {
                         console.log(linkObject.attr("id"), "El usuario ha solicitado que se cierre la ventana.");
                         modalObject.modal('hide');
-                        Components.OnLoad(linkObject, data);
+                        Components.OnLoad(linkObject, closeResponse);
                     });
                 }
             }

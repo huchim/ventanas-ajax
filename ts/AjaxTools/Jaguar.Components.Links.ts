@@ -133,21 +133,23 @@
         // presionado el botón de cerrar presente en la respuesta.
         if ($(".btn-close", ajaxComponent).length)
         {
+            // Buscar el último botón dentro del contenedor.
             var closeButton = $(".btn-close", ajaxComponent).last();
+
+            // Si es el usuario quien cierra el formulario, entonces es posible que
+            // la operación no se haya completado, sin embargo uniremos la respuesta
+            // del servidor con un "Status" igual a "Closed".
             var closeResponse: AjaxResponse = new AjaxResponse();
-            closeResponse.Status = "Closed";
+            closeResponse.Status = closeButton.attr("data-close-status") || "Closed";
             closeResponse.Type = ResponseType.Other;
+            closeResponse.Response = data.Response;
 
             console.log(linkObject.attr("id"), "La ventana contiene un botón para cerrar, cuando el usuario de clic se cerrará.");
-
             closeButton.click(function (event: JQueryEventObject)
             {
                 console.log(linkObject.attr("id"), "El usuario ha solicitado que se cierre la ventana.");
-                
-                // Cerrar la ventana modal.
                 modalObject.modal('hide');
-
-                Components.OnLoad(linkObject, data);
+                Components.OnLoad(linkObject, closeResponse);
             });
         }
     }

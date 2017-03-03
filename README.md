@@ -21,6 +21,15 @@ cerrará la ventana.
 El HTML impreso en la ventana puede contener formularios, pero no debería incluir otros enlaces que abran
 una ventana secundaria.
 
+Siempre se tomará el último botón con la clase `btn-close` que exista en la respuesta. Al cerrar la ventana
+usando ese botón la respuesta siempre será `data.Status = "Closed"` que indica que el formulario fue
+cerrado por el usuario. Es posible cambiar ese "Status" por medio de atributo `data-close-status`, como en
+el ejemplo siguiente.
+
+```
+<a href="/ruta-url/" class="link-ajax" data-close-status="Cancelled">enlace</a>
+```
+
 ### Respuesta JSON.
 
 Cuando el enlace devuelva un encabezado de tipo de contenido `Content-Type: application/json`, este será
@@ -40,6 +49,9 @@ ejemplo siguiente:
     }
 </script>
 ``` 
+
+
+
 ### Respuesta "Ok"
 
 Cuando el enlace devuelva una única palabra "Ok", la ventana se cerrará automáticamente. 
@@ -67,7 +79,35 @@ que tome sus consideraciones al respecto.
 Si la respuesta del servidor es el mismo formulario, se repetirá el proceso hasta que la respuesta
 sea JSON, "Ok" o el usuario de clic en el botón "Cerrar".
 
---
+## GRUNT
+
+Si usas GRUNT, puedes utilizar `grunt-contrib-uglify` para que elimines todos los `console.log` que se
+usaron en el código.
+
+```
+module.exports = function (grunt) {    
+    grunt.initConfig({
+        uglify: {
+            options: {
+                compress: {
+                    drop_console: true 
+                }
+            },
+            production: {
+                src: [                    
+                    "dist/ventanas-ajax.js"
+                ],
+                dest: scriptsPath + 'bundle.min.js'
+            }
+        }
+    });
+
+    grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.registerTask('default', ['uglify:production']);
+}
+```
+
+----
 
 # Programación TypeScript
 

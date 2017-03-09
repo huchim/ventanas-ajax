@@ -204,11 +204,11 @@ var Jaguar;
                     closeResponse.Status = closeButton.attr("data-close-status") || "Closed";
                     closeResponse.Type = Jaguar.ResponseType.Other;
                     closeResponse.Response = data.Response;
+                    var modalWindow = linkObject.data("Window");
                     console.log(linkObject.attr("id"), "La ventana contiene un botón para cerrar, cuando el usuario de clic se cerrará.");
                     closeButton.click(function (event) {
                         console.log(linkObject.attr("id"), "El usuario ha solicitado que se cierre la ventana.");
-                        modalObject.modal('hide');
-                        ajaxComponent.empty();
+                        modalWindow.CloseDialog();
                         Components.OnLoad(linkObject, closeResponse);
                     });
                 }
@@ -258,6 +258,19 @@ var Jaguar;
                         Jaguar.Web.Load(url, ajaxComponent, "link");
                         break;
                 }
+            };
+            ModalWindow.prototype.CloseDialog = function () {
+                console.log(this.SourceElementId, this.Id, "Liberando recursos al cerrar la ventana.");
+                $("#" + this.Id).on('hidden.bs.modal', function () {
+                    console.log("Se va eliminar de la memoria la ventana.");
+                    $(this).data('bs.modal', null);
+                    console.log("Eliminando HTML del documento.");
+                    $(this).remove();
+                });
+                console.log("Ocultando ventana...");
+                $("#" + this.Id).modal('hide');
+                console.log("Establecer el valor de la bandera de inicialización.");
+                this.IsInitialized = false;
             };
             ModalWindow.prototype.OpenDialog = function () {
                 console.log(this.SourceElementId, "Vamos a abrir la ventana correspondiente al enlace.");

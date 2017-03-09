@@ -6,6 +6,10 @@
         private CloseCallback: string;
         private ModalType: string;
         private SourceElementId: string;
+
+        /**
+         * Determina si el HTML de la ventana ha sido inicializado o no.
+         */
         private IsInitialized: boolean = false;
 
         /**
@@ -67,6 +71,27 @@
                     Web.Load(url, ajaxComponent, "link");
                     break;
             }
+        }
+
+        public CloseDialog(): void
+        {
+            console.log(this.SourceElementId, this.Id, "Liberando recursos al cerrar la ventana.");           
+            
+            // Eliminar la ventana una vez que se haya cerrado.
+            $(`#${this.Id}`).on('hidden.bs.modal', function () {
+                console.log("Se va eliminar de la memoria la ventana.");
+                $(this).data('bs.modal', null);
+
+                console.log( "Eliminando HTML del documento.");
+                $(this).remove();
+            });
+
+            console.log("Ocultando ventana...");
+            // Cerrar la ventana.
+            $(`#${this.Id}`).modal('hide');
+
+            console.log("Establecer el valor de la bandera de inicialización.");
+            this.IsInitialized = false;
         }
         
         public OpenDialog(): void {

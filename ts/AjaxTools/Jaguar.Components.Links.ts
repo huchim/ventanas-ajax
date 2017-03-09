@@ -144,12 +144,14 @@
             closeResponse.Type = ResponseType.Other;
             closeResponse.Response = data.Response;
 
+            // Recuperar la ventana de este objeto.
+            var modalWindow = <ModalWindow>linkObject.data("Window");
+
             console.log(linkObject.attr("id"), "La ventana contiene un botón para cerrar, cuando el usuario de clic se cerrará.");
             closeButton.click(function (event: JQueryEventObject)
             {
                 console.log(linkObject.attr("id"), "El usuario ha solicitado que se cierre la ventana.");
-                modalObject.modal('hide');
-                ajaxComponent.empty();
+                modalWindow.CloseDialog();
                 Components.OnLoad(linkObject, closeResponse);
             });
         }

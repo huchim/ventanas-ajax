@@ -149,7 +149,7 @@
             {
                 console.log(linkObject.attr("id"), "El usuario ha solicitado que se cierre la ventana.");
                 modalObject.modal('hide');
-                modalObject.empty();
+                ajaxComponent.empty();
                 Components.OnLoad(linkObject, closeResponse);
             });
         }
